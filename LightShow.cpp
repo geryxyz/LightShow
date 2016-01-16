@@ -56,12 +56,14 @@ void Color::dump() {
 	Serial.print(this->b);
 }
 
-ColorFade::ColorFade(Color from, uint32_t iteration, Color to) {
+ColorFade::ColorFade(Color from, uint32_t duration, Color to) {
+	this->iteration = ((float)duration / 1000.0f) * PIXEL_FPS;
+	this->wait = 1000 / PIXEL_FPS;
 	this->from = from;
 	this->to = to;
 	this->current = from;
 	Color range = to - from;
-	this->amount = range * (1.0f / (float)(iteration - 1));
+	this->amount = range * (1.0f / (float)(this->iteration - 1));
 }
 
 Color ColorFade::NextColor() {

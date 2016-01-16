@@ -29,6 +29,8 @@ struct Colors {
 	static const Color blue;
 };
 
+#define PIXEL_FPS 60
+
 class ColorFade {
 private:
 	Color from;
@@ -37,7 +39,11 @@ private:
 	Color current;
 
 public:
-	ColorFade(Color from, uint32_t iteration, Color to);
+	unsigned long iteration;
+	uint32_t wait;
+
+	//duration: in millis
+	ColorFade(Color from, uint32_t duration, Color to);
 	Color NextColor();
 };
 
