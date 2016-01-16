@@ -1,98 +1,78 @@
 #include "Arduino.h"
+
 #include "LightShow.h"
+#include <Adafruit_NeoPixel.h>
 
-ByteColor ByteColor::operator-(const ByteColor& rhs) {
-	int8_t r = this->r - rhs.r;
-	int8_t g = this->g - rhs.g;
-	int8_t b = this->b - rhs.b;
-	ByteColor newColor = {
-		r > 0 ? r : 0,
-		g > 0 ? g : 0,
-		b > 0 ? b : 0,
+Color Color::operator-(const Color& rhs) {
+	Color newColor = {
+		this->r - rhs.r,
+		this->g - rhs.g,
+		this->b - rhs.b,
 	};
 	return newColor;
 }
 
-ByteColor ByteColor::operator+(const ByteColor& rhs) {
-	uint16_t r = this->r + rhs.r;
-	uint16_t g = this->g + rhs.g;
-	uint16_t b = this->b + rhs.b;
-	ByteColor newColor = {
-		r < 256 ? r : 255,
-		g < 256 ? g : 255,
-		b < 256 ? b : 255
+Color Color::operator+(const Color& rhs) {
+	Color newColor = {
+		this->r + rhs.r,
+		this->g + rhs.g,
+		this->b + rhs.b
 	};
 	return newColor;
 }
 
-ByteColor ByteColor::operator*(const float& rhs) {
-	ByteColor newColor = {
-		rhs < 1.0f ? this->r * rhs : 255,
-		rhs < 1.0f ? this->g * rhs : 255,
-		rhs < 1.0f ? this->b * rhs : 255
+Color Color::operator*(const float& rhs) {
+	Color newColor = {
+		this->r * rhs,
+		this->g * rhs,
+		this->b * rhs
 	};
 	return newColor;
 }
 
-ByteColor ByteColor::operator*(const ByteColor& rhs) {
-	ByteColor newColor = {
-		(((uint16_t)this->r) + rhs.r)/2,
-		(((uint16_t)this->g) + rhs.g)/2,
-		(((uint16_t)this->b) + rhs.b)/2
+Color Color::operator*(const Color& rhs) {
+	Color newColor = {
+		(this->r + rhs.r)/2,
+		(this->g + rhs.g)/2,
+		(this->b + rhs.b)/2
 	};
 	return newColor;
 }
 
-ByteColor::operator LongColor() const {
-	LongColor color = {
-		this->r,
-		this->g,
-		this->b
-	};
-	return color;
+void Color::put(Adafruit_NeoPixel& pixels, uint8_t index) {
+	pixels.setPixelColor(
+		index,
+		(uint8_t)constrain(this->r, 0, 255),
+		(uint8_t)constrain(this->g, 0, 255),
+		(uint8_t)constrain(this->b, 0, 255)
+	);
 }
 
-void ByteColor::dump() {
-	Serial.print(this->r); Serial.print(";");
-	Serial.print(this->g); Serial.print(";");
+
+void Color::dump() {
+	Serial.print("R = ");
+	Serial.print(this->r); Serial.print(" G = ");
+	Serial.print(this->g); Serial.print(" B = ");
 	Serial.print(this->b);
 }
 
-#define COLORPRECISION 10000
-
-ColorFade::ColorFade(LongColor from, uint32_t iteration, LongColor to) {
+ColorFade::ColorFade(Color from, uint32_t iteration, Color to) {
 	this->from = from;
 	this->to = to;
 	this->current = from;
-	LongColor range = {
-		to.r - from.r,
-		to.g - from.g,
-		to.b - from.b
-	};
-	this->amount = {
-		(range.r * COLORPRECISION) / iteration,
-		(range.g * COLORPRECISION) / iteration,
-		(range.b * COLORPRECISION) / iteration
-	};
+	Color range = to - from;
+	this->amount = range * (1.0f / (float)(iteration - 1));
 }
 
-ByteColor ColorFade::NextColor() {
-	LongColor temp = this->current;
-	this->current = {
-		(this->current.r * COLORPRECISION + this->amount.r) / COLORPRECISION,
-		(this->current.g * COLORPRECISION + this->amount.g) / COLORPRECISION,
-		(this->current.b * COLORPRECISION + this->amount.b) / COLORPRECISION
-	};
-	ByteColor newColor = {
-		constrain(temp.r, 0, 255),
-		constrain(temp.g, 0, 255),
-		constrain(temp.b, 0, 255)
-	};
-	return newColor;
+Color ColorFade::NextColor() {
+	Color temp = this->current;
+	this->current = temp + this->amount;
+	return temp;
 }
 
-void LongColor::dump() {
-	Serial.print(this->r); Serial.print(";");
-	Serial.print(this->g); Serial.print(";");
-	Serial.print(this->b);
-}
+const Color Colors::black = {0, 0, 0};
+const Color Colors::white = {255, 255, 255};
+
+const Color Colors::red = {255, 0, 0};
+const Color Colors::green = {0, 255, 0};
+const Color Colors::blue = {0, 0, 255};
