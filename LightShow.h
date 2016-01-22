@@ -2,7 +2,7 @@
 #define LightShow_h
 
 #include "Arduino.h"
-#include <Adafruit_NeoPixel.h>
+#include "Adafruit_NeoPixel.h"
 
 
 struct Color {
@@ -10,10 +10,10 @@ struct Color {
 	float g;
 	float b;
 
-	Color operator-(const Color& rhs);
-	Color operator+(const Color& rhs);
-	Color operator*(const float& rhs);
-	Color operator*(const Color& rhs);
+	Color operator-(const Color& rhs) const;
+	Color operator+(const Color& rhs) const;
+	Color operator*(const float& rhs) const;
+	Color operator*(const Color& rhs) const;
 
 	void put(Adafruit_NeoPixel& pixels, uint8_t index);
 
@@ -45,6 +45,7 @@ public:
 	//duration: in millis
 	ColorFade(Color from, uint32_t duration, Color to);
 	Color NextColor();
+	Color PrevColor();
 };
 
 #endif

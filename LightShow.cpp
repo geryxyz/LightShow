@@ -3,7 +3,7 @@
 #include "LightShow.h"
 #include <Adafruit_NeoPixel.h>
 
-Color Color::operator-(const Color& rhs) {
+Color Color::operator-(const Color& rhs) const {
 	Color newColor = {
 		this->r - rhs.r,
 		this->g - rhs.g,
@@ -12,7 +12,7 @@ Color Color::operator-(const Color& rhs) {
 	return newColor;
 }
 
-Color Color::operator+(const Color& rhs) {
+Color Color::operator+(const Color& rhs) const {
 	Color newColor = {
 		this->r + rhs.r,
 		this->g + rhs.g,
@@ -21,7 +21,7 @@ Color Color::operator+(const Color& rhs) {
 	return newColor;
 }
 
-Color Color::operator*(const float& rhs) {
+Color Color::operator*(const float& rhs) const {
 	Color newColor = {
 		this->r * rhs,
 		this->g * rhs,
@@ -30,7 +30,7 @@ Color Color::operator*(const float& rhs) {
 	return newColor;
 }
 
-Color Color::operator*(const Color& rhs) {
+Color Color::operator*(const Color& rhs) const {
 	Color newColor = {
 		(this->r + rhs.r)/2,
 		(this->g + rhs.g)/2,
@@ -69,6 +69,12 @@ ColorFade::ColorFade(Color from, uint32_t duration, Color to) {
 Color ColorFade::NextColor() {
 	Color temp = this->current;
 	this->current = temp + this->amount;
+	return temp;
+}
+
+Color ColorFade::PrevColor() {
+	Color temp = this->current;
+	this->current = temp - this->amount;
 	return temp;
 }
 
