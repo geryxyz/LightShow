@@ -113,34 +113,3 @@ const Color Colors::white = {255, 255, 255};
 const Color Colors::red = {255, 0, 0};
 const Color Colors::green = {0, 255, 0};
 const Color Colors::blue = {0, 0, 255};
-
-template<uint8_t COUNT>
-MultiColorFade<COUNT>::MultiColorFade(Color froms[COUNT], uint32_t duration, Color tos[COUNT]) {
-	for (uint8_t i = 0; i < COUNT; i++) {
-		this->fades[i] = ColorFade(froms[i], duration, tos[i]);
-	}
-}
-
-template<uint8_t COUNT>
-void MultiColorFade<COUNT>::forwardPut(Adafruit_NeoPixel& pixels) {
-	for (uint8_t i = 0; i < COUNT; i++) {
-		this->fades[i].nextColor().put(pixels, i);
-	}
-}
-
-template<uint8_t COUNT>
-void MultiColorFade<COUNT>::backwardPut(Adafruit_NeoPixel& pixels) {
-	for (uint8_t i = 0; i < COUNT; i++) {
-		this->fades[i].prevColor().put(pixels, i);
-	}
-}
-
-template<uint8_t COUNT>
-unsigned long MultiColorFade<COUNT>::iteration() {
-	return this->fades[0].iteration;
-}
-
-template<uint8_t COUNT>
-uint32_t MultiColorFade<COUNT>::wait() {
-	return this->fades[0].wait;
-}

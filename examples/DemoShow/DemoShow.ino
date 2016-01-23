@@ -14,11 +14,13 @@ void setup() {
 #define PIXEL_FPS 60
 
 void loop() {
+	uint32_t waitBetweenScenario = 3000;
 	uint32_t durationInMillisecond = 3000;
 
 	Colors::black.putAll(pixels, 3);
 	pixels.show();
-	delay(1000);
+	delay(waitBetweenScenario);
+	
 	ColorFade redToGreen(Colors::red, durationInMillisecond, Colors::green);
 	ColorFade greenToBlue(Colors::green, durationInMillisecond, Colors::blue);
 	ColorFade blueToRed(Colors::blue, durationInMillisecond, Colors::red);
@@ -28,10 +30,28 @@ void loop() {
 
 	Colors::black.putAll(pixels, 3);
 	pixels.show();
-	delay(1000);
+	delay(waitBetweenScenario);
+	
 	ColorFade nino(Colors::red, 500, Colors::blue);
 	for (uint8_t i = 0; i < 5; i++) {
 		bool backAndForth = true;
 		nino.play(pixels, backAndForth, 0);
 	}
+
+	Colors::black.putAll(pixels, 3);
+	pixels.show();
+	delay(waitBetweenScenario);
+
+	Color froms[3] = {
+		Colors::red,
+		Colors::green,
+		Colors::blue,
+	};
+	Color tos[3] = {
+		Colors::blue,
+		Colors::red,
+		Colors::green,
+	};
+	MultiColorFade<3> fade(froms, 5000, tos);
+	fade.play(pixels, false);
 }
