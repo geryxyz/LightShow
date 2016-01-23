@@ -37,17 +37,20 @@ private:
 	Color to;
 	Color amount;
 	Color current;
+	uint32_t duration;
 
 public:
 	unsigned long iteration;
 	uint32_t wait;
 
 	//duration: in millis
+	ColorFade();
 	ColorFade(Color from, uint32_t duration, Color to);
 	void reset();
 	Color nextColor();
 	Color prevColor();
 	void play(Adafruit_NeoPixel& pixels, bool backAndForth, uint8_t index);
+	void dump();
 };
 
 template<uint8_t COUNT>
@@ -55,6 +58,7 @@ class MultiColorFade
 {
 private:
 	ColorFade fades[COUNT];
+	uint32_t duration;
 public:
 	MultiColorFade(Color froms[COUNT], uint32_t duration, Color tos[COUNT]);
 	void reset();
@@ -63,14 +67,15 @@ public:
 	unsigned long iteration();
 	uint32_t wait();
 	void play(Adafruit_NeoPixel& pixels, bool backAndForth);
+	void dump();
 };
 
 template<uint8_t COUNT>
 MultiColorFade<COUNT>::MultiColorFade(Color froms[COUNT], uint32_t duration, Color tos[COUNT]) {
 	for (uint8_t i = 0; i < COUNT; i++) {
-		ColorFade fade(froms[i], duration, tos[i]);
-		this->fades[i] = fade;
+		this->fades[i] = ColorFade(froms[i], duration, tos[i]);
 	}
+	this->duration = duration;
 }
 
 template<uint8_t COUNT>
@@ -107,17 +112,25 @@ uint32_t MultiColorFade<COUNT>::wait() {
 template<uint8_t COUNT>
 void MultiColorFade<COUNT>::play(Adafruit_NeoPixel& pixels, bool backAndForth) {
 	this->reset();
-	for (uint8_t i = 0; i < this->iteration(); i++) {
+	for (uint32_t i = 0; i < this->iteration(); i++) {
 		this->forwardPut(pixels);
 		pixels.show();
 		delay(this->wait());
 	}
 	if (backAndForth) {
-		for (uint8_t i = 0; i < this->iteration(); i++) {
+		for (uint32_t i = 0; i < this->iteration(); i++) {
 			this->backwardPut(pixels);
 			pixels.show();
 			delay(this->wait());
 		}
+	}
+}
+
+template<uint8_t COUNT>
+void MultiColorFade<COUNT>::dump() {
+	for (uint8_t i = 0; i < COUNT; i++) {
+		this->fades[i].dump();
+		Serial.println("--------------");
 	}
 }
 

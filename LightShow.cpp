@@ -66,6 +66,10 @@ void Color::dump() const {
 	Serial.print(this->b);
 }
 
+ColorFade::ColorFade() {
+	;
+}
+
 ColorFade::ColorFade(Color from, uint32_t duration, Color to) {
 	this->iteration = ((float)duration / 1000.0f) * PIXEL_FPS;
 	this->wait = 1000 / PIXEL_FPS;
@@ -74,6 +78,7 @@ ColorFade::ColorFade(Color from, uint32_t duration, Color to) {
 	this->current = from;
 	Color range = to - from;
 	this->amount = range * (1.0f / (float)(this->iteration - 1));
+	this->duration = duration;
 }
 
 void ColorFade::reset() {
@@ -93,18 +98,33 @@ Color ColorFade::prevColor() {
 
 void ColorFade::play(Adafruit_NeoPixel& pixels, bool backAndForth, uint8_t index) {
 	this->reset();
-	for (uint8_t i = 0; i < this->iteration; i++) {
+	for (uint32_t i = 0; i < this->iteration; i++) {
 		this->nextColor().put(pixels, index);
 		pixels.show();
 		delay(this->wait);
 	}
 	if (backAndForth) {
-		for (uint8_t i = 0; i < this->iteration; i++) {
+		for (uint32_t i = 0; i < this->iteration; i++) {
 			this->prevColor().put(pixels, index);
 			pixels.show();
 			delay(this->wait);
 		}
 	}
+}
+
+void ColorFade::dump() {
+	Serial.print("from: ");
+	this->from.dump();
+	Serial.println();
+	Serial.print("to: ");
+	this->to.dump();
+	Serial.println();
+	Serial.print("duration = ");
+	Serial.println(this->duration);
+	Serial.print("iteration = ");
+	Serial.println(this->iteration);
+	Serial.print("wait = ");
+	Serial.println(this->wait);
 }
 
 const Color Colors::black = {0, 0, 0};

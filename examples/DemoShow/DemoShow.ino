@@ -44,14 +44,15 @@ void loop() {
 
 	Color froms[3] = {
 		Colors::red,
+		Colors::white,
 		Colors::green,
-		Colors::blue,
 	};
 	Color tos[3] = {
-		Colors::blue,
-		Colors::red,
 		Colors::green,
+		Colors::black,
+		Colors::red,
 	};
-	MultiColorFade<3> fade(froms, 5000, tos);
-	fade.play(pixels, false);
+	MultiColorFade<3> fade(froms, 2500, tos);
+	fade.dump();
+	fade.play(pixels, true);
 }
