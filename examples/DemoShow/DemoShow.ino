@@ -1,12 +1,12 @@
 #include <Adafruit_NeoPixel.h>
 #include <LightShow.h>
 
-Adafruit_NeoPixel pixels = Adafruit_NeoPixel(3, 6, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(9, 6, NEO_GRB + NEO_KHZ800);
 
 void setup() {
 	Serial.begin(9600);
 	pixels.begin();
-	pixels.setBrightness(128);
+	pixels.setBrightness(255);
 	Colors::black.putAll(pixels, 3);
 	pixels.show();
 }
@@ -75,18 +75,43 @@ void loop() {
 	}
 
 	//multi pixel (color) fading
+	{
 	cleanCut();
 	Color froms[3] = {
 		Colors::red,
-		Colors::white,
-		Colors::green,
+		Colors::red,
+		Colors::red
 	};
 	Color tos[3] = {
+		Colors::white,
 		Colors::green,
-		Colors::black,
-		Colors::red,
+		Colors::blue
 	};
-	MultiColorFade<3> fade(froms, 2500, tos);
-	fade.dump();
+	MultiColorFade<3> fade(froms, 1000, tos);
 	fade.play(pixels, true);
+	}
+
+	//stack size optimized fading
+	{
+	cleanCut();
+	FADE(Colors::black, 1000, Colors::red, pixels, 0, false)
+	FADE(Colors::red, 1000, Colors::blue, pixels, 0, false)
+	FADE(Colors::blue, 1000, Colors::black, pixels, 0, false)
+	}
+
+	//stack size optimized fading
+	{
+	cleanCut();
+	Color froms[3] = {
+		Colors::black,
+		Colors::black,
+		Colors::black
+	};
+	Color tos[3] = {
+		Colors::red,
+		Colors::red,
+		Colors::red
+	};
+	MULTIFADE(3, froms, 1000, tos, pixels, true)
+	}
 }

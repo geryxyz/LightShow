@@ -4,21 +4,33 @@
 #include "Arduino.h"
 #include "Adafruit_NeoPixel.h"
 
+class Color {
+private:
+	int16_t r;
+	int16_t g;
+	int16_t b;
 
-struct Color {
-	float r;
-	float g;
-	float b;
-
+public:
 	Color operator-(const Color& rhs) const;
 	Color operator+(const Color& rhs) const;
 	Color operator*(const float& rhs) const;
 	Color operator*(const Color& rhs) const;
 
+	Color();
+	Color(uint8_t r, uint8_t g, uint8_t b);
+	Color(int16_t r, int16_t g, int16_t b);
+	Color(const Color& color);
 	void put(Adafruit_NeoPixel& pixels, uint8_t index) const;
 	void putAll(Adafruit_NeoPixel& pixels, uint8_t count) const;
 	void dump() const;
 };
+
+template<uint8_t COUNT>
+void put(Color colors[COUNT], Adafruit_NeoPixel& pixels) {
+	for (uint8_t i = 0; i < COUNT; i++) {
+		colors[i].put(pixels, i);
+	}
+}
 
 struct Colors {
 	static const Color black;
@@ -53,6 +65,8 @@ public:
 	void dump();
 };
 
+#define FADE(from, duration, to, pixels, index, back) { ColorFade(from, duration, to).play(pixels, back, index); }
+
 template<uint8_t COUNT>
 class MultiColorFade
 {
@@ -69,6 +83,8 @@ public:
 	void play(Adafruit_NeoPixel& pixels, bool backAndForth);
 	void dump();
 };
+
+#define MULTIFADE(count, froms, duration, tos, pixels, back) { MultiColorFade<count>(froms, duration, tos).play(pixels, back); }
 
 template<uint8_t COUNT>
 MultiColorFade<COUNT>::MultiColorFade(Color froms[COUNT], uint32_t duration, Color tos[COUNT]) {
@@ -130,7 +146,7 @@ template<uint8_t COUNT>
 void MultiColorFade<COUNT>::dump() {
 	for (uint8_t i = 0; i < COUNT; i++) {
 		this->fades[i].dump();
-		Serial.println("--------------");
+		Serial.println(F("--------------"));
 	}
 }
 
