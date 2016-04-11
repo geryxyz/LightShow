@@ -107,8 +107,6 @@ void ColorFade::reset() {
 }
 
 Color ColorFade::nextColor() {
-	this->current.dump();
-	Serial.println();
 	Color temp = this->current;
 	this->current = temp + this->amount;
 	return temp;
