@@ -7,18 +7,18 @@
 
 Color Color::operator-(const Color& rhs) const {
 	Color newColor(
-		this->r - rhs.r,
-		this->g - rhs.g,
-		this->b - rhs.b
+		(int16_t)(this->r - rhs.r),
+		(int16_t)(this->g - rhs.g),
+		(int16_t)(this->b - rhs.b)
 	);
 	return newColor;
 }
 
 Color Color::operator+(const Color& rhs) const {
 	Color newColor(
-		this->r + rhs.r,
-		this->g + rhs.g,
-		this->b + rhs.b
+		(int16_t)(this->r + rhs.r),
+		(int16_t)(this->g + rhs.g),
+		(int16_t)(this->b + rhs.b)
 	);
 	return newColor;
 }
@@ -34,9 +34,9 @@ Color Color::operator*(const float& rhs) const {
 
 Color Color::operator*(const Color& rhs) const {
 	Color newColor(
-		(this->r + rhs.r)/(int16_t)2,
-		(this->g + rhs.g)/(int16_t)2,
-		(this->b + rhs.b)/(int16_t)2
+		(int16_t)((this->r + rhs.r)/(int16_t)2),
+		(int16_t)((this->g + rhs.g)/(int16_t)2),
+		(int16_t)((this->b + rhs.b)/(int16_t)2)
 	);
 	return newColor;
 }
