@@ -23,6 +23,9 @@ public:
 	void put(Adafruit_NeoPixel& pixels, uint8_t index) const;
 	void putAll(Adafruit_NeoPixel& pixels, uint8_t count) const;
 	void dump() const;
+	uint8_t getR();
+	uint8_t getG();
+	uint8_t getB();
 };
 
 template<uint8_t COUNT>

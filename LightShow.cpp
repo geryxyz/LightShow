@@ -87,6 +87,18 @@ void Color::dump() const {
 	Serial.print(this->b);
 }
 
+uint8_t Color::getR() {
+	return (uint8_t)constrain(this->r / (uint16_t)COLORPRECISION, 0, 255);
+}
+
+uint8_t Color::getG() {
+	return (uint8_t)constrain(this->g / (uint16_t)COLORPRECISION, 0, 255);
+}
+
+uint8_t Color::getB() {
+	return (uint8_t)constrain(this->b / (uint16_t)COLORPRECISION, 0, 255);
+}
+
 ColorFade::ColorFade() {
 	;
 }
